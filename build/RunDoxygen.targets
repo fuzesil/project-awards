@@ -1,0 +1,33 @@
+<Project>
+
+  <!-- 1. Shared setup for all Doxygen-related targets -->
+  <Target Name="PrepareDoxygen">
+    <PropertyGroup>
+      <DoxygenWorkDir>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)\..\..\Documentation'))</DoxygenWorkDir>
+      <DoxygenOutputDir>$(DoxygenWorkDir)\doxygen-output</DoxygenOutputDir>
+    </PropertyGroup>
+  </Target>
+
+  <!-- 2. Shared cleanup logic -->
+  <Target Name="CleanDoxygenOutput" DependsOnTargets="PrepareDoxygen">
+    <Message Importance="High" Text="Cleaning Doxygen output directory: $(DoxygenOutputDir)" />
+    <RemoveDir Directories="$(DoxygenOutputDir)" Condition="Exists('$(DoxygenOutputDir)')" />
+  </Target>
+
+  <!-- 3. Build documentation (NO CLEANING) -->
+  <Target Name="BuildDoxygen" DependsOnTargets="PrepareDoxygen">
+    <Message Importance="High" Text="Running Doxygen relative to $(DoxygenWorkDir)" />
+    <Exec Command="doxygen Doxyfile"
+          WorkingDirectory="$(DoxygenWorkDir)"
+          Condition="Exists('$(DoxygenWorkDir)')" />
+  </Target>
+
+  <!-- 4. Rebuild documentation (CLEAN + BUILD) -->
+  <Target Name="RebuildDoxygen"
+          DependsOnTargets="CleanDoxygenOutput;BuildDoxygen" />
+
+  <!-- 5. Clean documentation (for Clean target in csproj) -->
+  <Target Name="CleanDoxygen"
+          DependsOnTargets="CleanDoxygenOutput" />
+
+</Project>
