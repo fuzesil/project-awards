@@ -1,0 +1,38 @@
+﻿<Project DefaultTargets="Build" ToolsVersion="Current">
+
+  <PropertyGroup>
+    <ProjectGuid>{C12886BC-7844-41D8-8190-D4F0C0B4E956}</ProjectGuid>
+    <Configurations>Debug;Release;Doc</Configurations>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Doc'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <Import Project="..\..\build\RunDoxygen.targets" />
+
+  <!-- Build = run Doxygen -->
+  <Target Name="Build" Condition="'$(Configuration)' == 'Doc'">
+    <CallTarget Targets="BuildDoxygen" />
+  </Target>
+
+  <!-- Clean = delete output -->
+  <Target Name="Clean" Condition="'$(Configuration)' == 'Doc'">
+    <CallTarget Targets="CleanDoxygen" />
+  </Target>
+
+  <!-- Rebuild = clean + build -->
+  <Target Name="Rebuild" Condition="'$(Configuration)' == 'Doc'">
+    <CallTarget Targets="RebuildDoxygen" />
+  </Target>
+
+</Project>
