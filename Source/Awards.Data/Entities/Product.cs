@@ -68,7 +68,7 @@
                     && this.Price == other.Price
                     && this.EstimatedLifetime == other.EstimatedLifetime
                     && this.LaunchDate == other.LaunchDate
-                    && this.Name == this.Name;
+                    && this.Name == other.Name;
             }
 
             return false;
