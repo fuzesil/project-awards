@@ -83,15 +83,14 @@
 
         private static IEnumerable<ExpertGroup> ExpertGroupLoader(string path = @"DataSeed\ExpertGroup.csv")
         {
-            int counter = 0;
             using StreamReader sr = new StreamReader(path);
             while (sr.ReadLine() is string line)
             {
                 string[] fields = line.Split(';');
                 yield return new ExpertGroup
                 {
-                    ExpertGroupID = ++counter,
-                    Name = fields[0],
+                    ExpertGroupID = fields[0].ToIntOrZero(),
+                    Name = fields[1],
                 };
             }
         }
