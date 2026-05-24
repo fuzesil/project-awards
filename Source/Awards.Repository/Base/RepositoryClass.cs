@@ -48,7 +48,10 @@
             this.db.SaveChanges();
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Deletes the <typeparamref name="T"/> record with the given ID.
+        /// </summary>
+        /// <param name="id">The ID of the <typeparamref name="T"/> record to be deleted.</param>
         public abstract void Remove(int id);
 
         /// <inheritdoc/>
