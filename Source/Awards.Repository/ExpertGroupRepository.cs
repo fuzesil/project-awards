@@ -9,8 +9,6 @@
     /// </summary>
     public class ExpertGroupRepository : RepositoryClass<ExpertGroup>, IExpertGroupRepository
     {
-        private readonly DbContext db;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpertGroupRepository"/> class.
         /// </summary>
@@ -18,7 +16,6 @@
         public ExpertGroupRepository(DbContext db)
             : base(db)
         {
-            this.db = db ?? throw new System.ArgumentNullException(nameof(db));
         }
 
         /// <inheritdoc/>

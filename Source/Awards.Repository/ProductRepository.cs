@@ -9,8 +9,6 @@
     /// </summary>
     public class ProductRepository : RepositoryClass<Product>, IProductRepository
     {
-        private readonly DbContext db;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductRepository"/> class.
         /// </summary>
@@ -18,7 +16,6 @@
         public ProductRepository(DbContext db)
             : base(db)
         {
-            this.db = db ?? throw new System.ArgumentNullException(nameof(db));
         }
 
         /// <inheritdoc/>

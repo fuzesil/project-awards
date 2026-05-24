@@ -9,8 +9,6 @@
     /// </summary>
     public class MemberRepository : RepositoryClass<Member>, IMemberRepository
     {
-        private readonly DbContext db;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MemberRepository"/> class.
         /// </summary>
@@ -18,7 +16,6 @@
         public MemberRepository(DbContext db)
             : base(db)
         {
-            this.db = db ?? throw new System.ArgumentNullException(nameof(db));
         }
 
         /// <inheritdoc/>

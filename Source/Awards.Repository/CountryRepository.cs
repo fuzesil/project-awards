@@ -9,8 +9,6 @@
     /// </summary>
     public class CountryRepository : RepositoryClass<Country>, ICountryRepository
     {
-        private readonly DbContext db;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CountryRepository"/> class.
         /// </summary>
@@ -18,7 +16,6 @@
         public CountryRepository(DbContext db)
             : base(db)
         {
-            this.db = db ?? throw new System.ArgumentNullException(nameof(db));
         }
 
         /// <inheritdoc/>
