@@ -10,7 +10,7 @@
     /// </summary>
     public static class DataSeeder
     {
-        private static readonly Random Rnd = new Random();
+        private static readonly Random Rnd = new();
         private static readonly DateTime StartDt = new(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly DateTime EndDt = new(2020, 12, 31, 23, 59, 59, DateTimeKind.Utc);
         private static Dictionary<string, ExpertGroup> nameToExpertGroup;
@@ -44,7 +44,7 @@
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Member"/> objects by calling the <see cref="MemberLoader(string)"/> method.
         /// </summary>
-        public static IEnumerable<Member> GetMembers { get => MemberLoader(); }
+        public static IEnumerable<Member> GetMembers => MemberLoader();
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Brand"/> objects by calling the <see cref="BrandLoader(string)"/> method.
@@ -61,109 +61,99 @@
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Brand"/> objects by calling the <see cref="BrandLoader(string)"/> method.
         /// </summary>
-        public static IEnumerable<Product> GetProducts { get => ProductLoader(); }
+        public static IEnumerable<Product> GetProducts => ProductLoader();
 
         private static IEnumerable<Country> CountryLoader(string path = @"DataSeed\Country.csv")
         {
             int counter = 0;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while (sr.ReadLine() is string line)
+                string[] fields = line.Split(';');
+                yield return new Country
                 {
-                    string[] fields = line.Split(';');
-                    yield return new Country
-                    {
-                        CountryID = ++counter,
-                        Name = fields[0],
-                        CapitalCity = fields[1],
-                        CallingCode = fields[2].ToIntOrZero(),
-                        PPPperCapita = fields[3].ToIntOrZero(),
-                    };
-                }
+                    CountryID = ++counter,
+                    Name = fields[0],
+                    CapitalCity = fields[1],
+                    CallingCode = fields[2].ToIntOrZero(),
+                    PPPperCapita = fields[3].ToIntOrZero(),
+                };
             }
         }
 
         private static IEnumerable<ExpertGroup> ExpertGroupLoader(string path = @"DataSeed\ExpertGroup.csv")
         {
             int counter = 0;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while (sr.ReadLine() is string line)
+                string[] fields = line.Split(';');
+                yield return new ExpertGroup
                 {
-                    string[] fields = line.Split(';');
-                    yield return new ExpertGroup
-                    {
-                        ExpertGroupID = ++counter,
-                        Name = fields[0],
-                    };
-                }
+                    ExpertGroupID = ++counter,
+                    Name = fields[0],
+                };
             }
         }
 
         private static IEnumerable<Member> MemberLoader(string path = @"DataSeed\Member.csv")
         {
             int counter = 0;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while (sr.ReadLine() is string line)
+                string[] fields = line.Split(';');
+                yield return new Member
                 {
-                    string[] fields = line.Split(';');
-                    yield return new Member
-                    {
-                        MemberID = ++counter,
-                        ExpertGroupID = nameToExpertGroup.TryGetValue(fields[0], out ExpertGroup eg) ? eg.ExpertGroupID : 0,
-                        Name = fields[1],
-                        OfficeLocation = fields[3],
-                        CountryID = nameToCountry.TryGetValue(fields[2], out Country c) ? c.CountryID : 0,
-                        ChiefEditor = fields[4],
-                        Publisher = fields[5],
-                        PhoneNumber = fields[6],
-                        Website = fields[7],
-                    };
-                }
+                    MemberID = ++counter,
+                    ExpertGroupID = nameToExpertGroup.TryGetValue(fields[0], out ExpertGroup eg) ? eg.ExpertGroupID : 0,
+                    Name = fields[1],
+                    OfficeLocation = fields[3],
+                    CountryID = nameToCountry.TryGetValue(fields[2], out Country c) ? c.CountryID : 0,
+                    ChiefEditor = fields[4],
+                    Publisher = fields[5],
+                    PhoneNumber = fields[6],
+                    Website = fields[7],
+                };
             }
         }
 
         private static IEnumerable<Brand> BrandLoader(string path = @"DataSeed\Brand.csv")
         {
             int counter = 0;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while (sr.ReadLine() is string line)
+                string[] fields = line.Split(';');
+                yield return new Brand
                 {
-                    string[] fields = line.Split(';');
-                    yield return new Brand
-                    {
-                        BrandId = ++counter,
-                        Name = fields[0],
-                        Address = fields[1],
-                        CountryID = nameToCountry.TryGetValue(fields[2], out Country c) ? c.CountryID : 0,
-                        Homepage = fields[3],
-                    };
-                }
+                    BrandId = ++counter,
+                    Name = fields[0],
+                    Address = fields[1],
+                    CountryID = nameToCountry.TryGetValue(fields[2], out Country c) ? c.CountryID : 0,
+                    Homepage = fields[3],
+                };
             }
         }
 
         private static IEnumerable<Product> ProductLoader(string path = @"DataSeed\Product.csv")
         {
             int counter = 0;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while (sr.ReadLine() is string line)
+                string[] fields = line.Split(';');
+                yield return new Product
                 {
-                    string[] fields = line.Split(';');
-                    yield return new Product
-                    {
-                        ProductID = ++counter,
-                        BrandId = nameToBrand.TryGetValue(fields[1], out Brand b) ? b.BrandId : 0,
-                        Name = fields[2],
-                        ExpertGroupID = fields[3].ToIntOrZero(),
-                        Category = fields[4],
-                        Price = Rnd.Next(9999),
+                    ProductID = ++counter,
+                    BrandId = nameToBrand.TryGetValue(fields[1], out Brand b) ? b.BrandId : 0,
+                    Name = fields[2],
+                    ExpertGroupID = fields[3].ToIntOrZero(),
+                    Category = fields[4],
+                    Price = Rnd.Next(9999),
                     LaunchDate = StartDt.AddDays(Rnd.Next((EndDt - StartDt).Days)),
-                        EstimatedLifetime = Rnd.Next(1, 9),
-                    };
-                }
+                    EstimatedLifetime = Rnd.Next(1, 9),
+                };
             }
         }
 
