@@ -65,67 +65,50 @@
 
         private static IEnumerable<Country> CountryLoader(string path = @"DataSeed\Country.csv")
         {
-            List<Country> output = new List<Country>();
             int counter = 0;
-            string line = string.Empty;
-            string[] fields;
             using (StreamReader sr = new StreamReader(path))
             {
-                while ((line = sr.ReadLine()) != null)
+                while (sr.ReadLine() is string line)
                 {
-                    fields = line.Split(';');
-                    output.Add(new Country
+                    string[] fields = line.Split(';');
+                    yield return new Country
                     {
                         CountryID = ++counter,
                         Name = fields[0],
                         CapitalCity = fields[1],
                         CallingCode = fields[2].ToIntOrZero(),
                         PPPperCapita = fields[3].ToIntOrZero(),
-                    });
+                    };
                 }
-
-                sr.Close();
             }
-
-            return output;
         }
 
         private static IEnumerable<ExpertGroup> ExpertGroupLoader(string path = @"DataSeed\ExpertGroup.csv")
         {
-            List<ExpertGroup> output = new List<ExpertGroup>();
             int counter = 0;
-            string line;
-            string[] fields;
             using (StreamReader sr = new StreamReader(path))
             {
-                while ((line = sr.ReadLine()) != null)
+                while (sr.ReadLine() is string line)
                 {
-                    fields = line.Split(';');
-                    output.Add(new ExpertGroup
+                    string[] fields = line.Split(';');
+                    yield return new ExpertGroup
                     {
                         ExpertGroupID = ++counter,
                         Name = fields[0],
-                    });
+                    };
                 }
-
-                sr.Close();
             }
-
-            return output;
         }
 
         private static IEnumerable<Member> MemberLoader(string path = @"DataSeed\Member.csv")
         {
-            List<Member> output = new List<Member>();
             int counter = 0;
-            string line = string.Empty;
-            string[] fields;
             using (StreamReader sr = new StreamReader(path))
             {
-                while ((line = sr.ReadLine()) != null)
+                while (sr.ReadLine() is string line)
                 {
-                    fields = line.Split(';');
-                    output.Add(new Member
+                    string[] fields = line.Split(';');
+                    yield return new Member
                     {
                         MemberID = ++counter,
                         ExpertGroupID = nameToExpertGroup.TryGetValue(fields[0], out ExpertGroup eg) ? eg.ExpertGroupID : 0,
@@ -136,54 +119,40 @@
                         Publisher = fields[5],
                         PhoneNumber = fields[6],
                         Website = fields[7],
-                    });
+                    };
                 }
-
-                sr.Close();
             }
-
-            return output;
         }
 
         private static IEnumerable<Brand> BrandLoader(string path = @"DataSeed\Brand.csv")
         {
-            List<Brand> output = new List<Brand>();
             int counter = 0;
-            string line = string.Empty;
-            string[] fields;
             using (StreamReader sr = new StreamReader(path))
             {
-                while ((line = sr.ReadLine()) != null)
+                while (sr.ReadLine() is string line)
                 {
-                    fields = line.Split(';');
-                    output.Add(new Brand
+                    string[] fields = line.Split(';');
+                    yield return new Brand
                     {
                         BrandId = ++counter,
                         Name = fields[0],
                         Address = fields[1],
                         CountryID = nameToCountry.TryGetValue(fields[2], out Country c) ? c.CountryID : 0,
                         Homepage = fields[3],
-                    });
+                    };
                 }
-
-                sr.Close();
             }
-
-            return output;
         }
 
         private static IEnumerable<Product> ProductLoader(string path = @"DataSeed\Product.csv")
         {
-            List<Product> output = new List<Product>();
             int counter = 0;
-            string line = string.Empty;
-            string[] fields;
             using (StreamReader sr = new StreamReader(path))
             {
-                while ((line = sr.ReadLine()) != null)
+                while (sr.ReadLine() is string line)
                 {
-                    fields = line.Split(';');
-                    output.Add(new Product
+                    string[] fields = line.Split(';');
+                    yield return new Product
                     {
                         ProductID = ++counter,
                         BrandId = nameToBrand.TryGetValue(fields[1], out Brand b) ? b.BrandId : 0,
@@ -193,13 +162,9 @@
                         Price = Rnd.Next(9999),
                     LaunchDate = StartDt.AddDays(Rnd.Next((EndDt - StartDt).Days)),
                         EstimatedLifetime = Rnd.Next(1, 9),
-                    });
+                    };
                 }
-
-                sr.Close();
             }
-
-            return output;
         }
 
         /// <summary>
