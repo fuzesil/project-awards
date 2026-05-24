@@ -11,6 +11,8 @@
     public static class DataSeeder
     {
         private static readonly Random Rnd = new Random();
+        private static readonly DateTime StartDt = new(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime EndDt = new(2020, 12, 31, 23, 59, 59, DateTimeKind.Utc);
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Country"/> objects by calling the <see cref="CountryLoader(string)"/> method.
@@ -167,7 +169,7 @@
                         ExpertGroupID = int.Parse(fields[3], System.Globalization.NumberFormatInfo.InvariantInfo),
                         Category = fields[4],
                         Price = Rnd.Next(9999),
-                        LaunchDate = DateTime.Today,
+                    LaunchDate = StartDt.AddDays(Rnd.Next((EndDt - StartDt).Days)),
                         EstimatedLifetime = Rnd.Next(1, 9),
                     });
                 }
