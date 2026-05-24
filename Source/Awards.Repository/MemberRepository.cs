@@ -29,7 +29,7 @@
         /// <inheritdoc/>
         public void ChangeName(int id, string newName)
         {
-            Member thisMember = this.GetMember(id);
+            Member thisMember = this.GetOne(id);
             thisMember.Name = newName;
             this.Update(thisMember);
         }
@@ -37,7 +37,7 @@
         /// <inheritdoc/>
         public void Move(int id, int newCountryID, string newLocation)
         {
-            Member thisMember = this.GetMember(id);
+            Member thisMember = this.GetOne(id);
             if (id > 0)
             {
                 thisMember.CountryID = newCountryID;
@@ -62,7 +62,7 @@
         /// <inheritdoc/>
         public override void Remove(int id)
         {
-            this.Remove(this.GetMember(id));
+            this.Remove(this.GetOne(id));
         }
 
         /// <inheritdoc/>
@@ -95,26 +95,6 @@
             Member thisMember = this.GetOne(id);
             thisMember.Website = newWebsite;
             this.Update(thisMember);
-        }
-
-        /// <summary>
-        /// Returns 1 record or throws exception.
-        /// </summary>
-        /// <param name="id">The ID of the record to be returned.</param>
-        /// <returns>The one record with the matching ID.</returns>
-        private Member GetMember(int id)
-        {
-            Member thisMember;
-            try
-            {
-                thisMember = this.GetAll().Single(member => member.MemberID == id);
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                throw new System.ApplicationException($"No record with the given ID [{id}] found by {nameof(this.GetMember)}.", ex);
-            }
-
-            return thisMember;
         }
     }
 }

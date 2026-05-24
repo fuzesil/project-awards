@@ -21,7 +21,7 @@
         /// <inheritdoc/>
         public void Move(int id, int newCountryID, string newAddress)
         {
-            Brand brand = this.GetBrand(id);
+            Brand brand = this.GetOne(id);
 
             if (id > 0)
             {
@@ -35,7 +35,7 @@
         /// <inheritdoc/>
         public void ChangeName(int id, string newName)
         {
-            Brand brand = this.GetBrand(id);
+            Brand brand = this.GetOne(id);
             if (!string.IsNullOrWhiteSpace(newName))
             {
                 brand.Name = newName;
@@ -47,7 +47,7 @@
         /// <inheritdoc/>
         public void ChangeHomePage(int id, string newHP)
         {
-            Brand brand = this.GetBrand(id);
+            Brand brand = this.GetOne(id);
             if (!string.IsNullOrWhiteSpace(newHP))
             {
                 brand.Homepage = newHP;
@@ -72,26 +72,6 @@
         public override void Remove(int id)
         {
             this.Remove(this.GetOne(id));
-        }
-
-        /// <summary>
-        /// Returns 1 record or throws exception.
-        /// </summary>
-        /// <param name="id">The ID of the record to be returned.</param>
-        /// <returns>The one record with the matching ID.</returns>
-        private Brand GetBrand(int id)
-        {
-            Brand brand;
-            try
-            {
-                brand = this.GetAll().Single(brand => brand.BrandId == id);
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                throw new System.ApplicationException($"No records with the given ID [{id}] found by {nameof(this.GetBrand)}.", ex);
-            }
-
-            return brand;
         }
     }
 }

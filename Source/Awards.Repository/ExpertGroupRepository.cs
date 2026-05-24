@@ -21,7 +21,7 @@
         /// <inheritdoc/>
         public void ChangeName(int id, string newName)
         {
-            ExpertGroup expertGroup = this.GetExpertGroup(id);
+            ExpertGroup expertGroup = this.GetOne(id);
             expertGroup.Name = newName;
             this.Update(expertGroup);
         }
@@ -42,26 +42,6 @@
         public override void Remove(int id)
         {
             this.Remove(this.GetOne(id));
-        }
-
-        /// <summary>
-        /// Returns 1 record or throws exception.
-        /// </summary>
-        /// <param name="id">The ID of the record to be returned.</param>
-        /// <returns>The one record with the matching ID.</returns>
-        private ExpertGroup GetExpertGroup(int id)
-        {
-            ExpertGroup thisEG;
-            try
-            {
-                thisEG = this.GetAll().Single(eg => eg.ExpertGroupID == id);
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                throw new System.ApplicationException($"No record with the given ID [{id}] found by {nameof(this.GetExpertGroup)}.", ex);
-            }
-
-            return thisEG;
         }
     }
 }

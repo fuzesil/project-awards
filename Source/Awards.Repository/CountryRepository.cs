@@ -21,7 +21,7 @@
         /// <inheritdoc/>
         public void ChangeName(int id, string newName)
         {
-            Country thisCountry = this.GetCountry(id);
+            Country thisCountry = this.GetOne(id);
             thisCountry.Name = newName;
             this.Update(thisCountry);
         }
@@ -29,7 +29,7 @@
         /// <inheritdoc/>
         public void ChangeCapitalCity(int id, string newCapitalCity)
         {
-            Country thisCountry = this.GetCountry(id);
+            Country thisCountry = this.GetOne(id);
             thisCountry.CapitalCity = newCapitalCity;
             this.Update(thisCountry);
         }
@@ -37,7 +37,7 @@
         /// <inheritdoc/>
         public void ChangePPP(int id, int newPPP)
         {
-            Country thisCountry = this.GetCountry(id);
+            Country thisCountry = this.GetOne(id);
             thisCountry.PPPperCapita = newPPP;
             this.Update(thisCountry);
         }
@@ -63,27 +63,7 @@
         /// <inheritdoc/>
         public override void Remove(int id)
         {
-            this.Remove(this.GetCountry(id));
-        }
-
-        /// <summary>
-        /// Returns 1 record or throws exception.
-        /// </summary>
-        /// <param name="id">The ID of the record to be returned.</param>
-        /// <returns>The one record with the matching ID.</returns>
-        private Country GetCountry(int id)
-        {
-            Country country;
-            try
-            {
-                country = this.GetAll().Single(country => country.CountryID == id);
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                throw new System.ApplicationException($"No record with the given ID [{id}] found by {nameof(this.GetCountry)}.", ex);
-            }
-
-            return country;
+            this.Remove(this.GetOne(id));
         }
     }
 }
