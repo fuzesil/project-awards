@@ -50,13 +50,13 @@
         /// <inheritdoc/>
         public override Member GetOne(int id)
         {
-            return this.GetAll().Single(member => member.MemberID == id);
+            return this.GetAll().First(member => member.MemberID == id);
         }
 
         /// <inheritdoc/>
         public override Member GetOne(string name)
         {
-            return this.GetAll().Where(member => member.Name.Contains(name)).First();
+            return this.GetAll().First(member => member.Name.Contains(name));
         }
 
         /// <inheritdoc/>

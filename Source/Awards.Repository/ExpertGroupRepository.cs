@@ -29,13 +29,13 @@
         /// <inheritdoc/>
         public override ExpertGroup GetOne(int id)
         {
-            return this.GetAll().Single(expertgroup => expertgroup.ExpertGroupID == id);
+            return this.GetAll().First(expertgroup => expertgroup.ExpertGroupID == id);
         }
 
         /// <inheritdoc/>
         public override ExpertGroup GetOne(string name)
         {
-            return this.GetAll().Where(eg => eg.Name.Contains(name)).First();
+            return this.GetAll().First(eg => eg.Name.Contains(name));
         }
 
         /// <inheritdoc/>

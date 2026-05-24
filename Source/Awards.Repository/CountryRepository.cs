@@ -51,13 +51,13 @@
         /// <inheritdoc/>
         public override Country GetOne(int id)
         {
-            return this.GetAll().Single(country => country.CountryID == id);
+            return this.GetAll().First(country => country.CountryID == id);
         }
 
         /// <inheritdoc/>
         public override Country GetOne(string name)
         {
-            return this.GetAll().Where(country => country.Name.Contains(name)).First();
+            return this.GetAll().First(country => country.Name.Contains(name));
         }
 
         /// <inheritdoc/>

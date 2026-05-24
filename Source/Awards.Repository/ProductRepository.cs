@@ -29,13 +29,13 @@
         /// <inheritdoc/>
         public override Product GetOne(int id)
         {
-            return this.GetAll().Single(product => product.ProductID == id);
+            return this.GetAll().First(product => product.ProductID == id);
         }
 
         /// <inheritdoc/>
         public override Product GetOne(string name)
         {
-            return this.GetAll().Where(product => product.Name.Contains(name)).First();
+            return this.GetAll().First(product => product.Name.Contains(name));
         }
 
         /// <inheritdoc/>

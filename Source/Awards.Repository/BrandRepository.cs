@@ -59,13 +59,13 @@
         /// <inheritdoc/>
         public override Brand GetOne(int id)
         {
-            return this.GetAll().Single(brand => brand.BrandId == id);
+            return this.GetAll().First(brand => brand.BrandId == id);
         }
 
         /// <inheritdoc/>
         public override Brand GetOne(string name)
         {
-            return this.GetAll().Where(brand => brand.Name.Contains(name)).First();
+            return this.GetAll().First(brand => brand.Name.Contains(name));
         }
 
         /// <inheritdoc/>
