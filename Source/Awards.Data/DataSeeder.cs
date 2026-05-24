@@ -119,18 +119,17 @@
 
         private static IEnumerable<Brand> BrandLoader(string path = @"DataSeed\Brand.csv")
         {
-            int counter = 0;
             using StreamReader sr = new StreamReader(path);
             while (sr.ReadLine() is string line)
             {
                 string[] fields = line.Split(';');
                 yield return new Brand
                 {
-                    BrandId = ++counter,
-                    Name = fields[0],
-                    Address = fields[1],
-                    CountryID = nameToCountry.TryGetValue(fields[2], out Country c) ? c.CountryID : 0,
-                    Homepage = fields[3],
+                    BrandId = fields[0].ToIntOrZero(),
+                    Name = fields[1],
+                    Address = fields[2],
+                    CountryID = nameToCountry.TryGetValue(fields[3], out Country c) ? c.CountryID : 0,
+                    Homepage = fields[4],
                 };
             }
         }
