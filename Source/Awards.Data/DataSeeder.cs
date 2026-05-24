@@ -79,8 +79,8 @@
                         CountryID = ++counter,
                         Name = fields[0],
                         CapitalCity = fields[1],
-                        CallingCode = ((Func<int>)(() => string.IsNullOrWhiteSpace(fields[2]) ? 0 : Convert.ToInt32(fields[2], System.Globalization.NumberFormatInfo.InvariantInfo)))(),
-                        PPPperCapita = ((Func<int>)(() => string.IsNullOrWhiteSpace(fields[3]) ? 0 : Convert.ToInt32(fields[3], System.Globalization.NumberFormatInfo.InvariantInfo)))(),
+                        CallingCode = fields[2].ToIntOrZero(),
+                        PPPperCapita = fields[3].ToIntOrZero(),
                     });
                 }
 
@@ -188,7 +188,7 @@
                         ProductID = ++counter,
                         BrandId = nameToBrand.TryGetValue(fields[1], out Brand b) ? b.BrandId : 0,
                         Name = fields[2],
-                        ExpertGroupID = int.Parse(fields[3], System.Globalization.NumberFormatInfo.InvariantInfo),
+                        ExpertGroupID = fields[3].ToIntOrZero(),
                         Category = fields[4],
                         Price = Rnd.Next(9999),
                     LaunchDate = StartDt.AddDays(Rnd.Next((EndDt - StartDt).Days)),
@@ -201,5 +201,15 @@
 
             return output;
         }
+
+        /// <summary>
+        /// Returns the integer value of the string if it can be parsed, otherwise returns 0. This method uses invariant culture for parsing and allows for leading and trailing whitespace.
+        /// </summary>
+        /// <param name="str">The string to parse.</param>
+        /// <returns>The integer value of the string if it can be parsed; otherwise, 0.</returns>
+        private static int ToIntOrZero(this string str) =>
+            int.TryParse(str, System.Globalization.NumberStyles.Integer, System.Globalization.NumberFormatInfo.InvariantInfo, out int result)
+                ? result
+                : 0;
     }
 }
