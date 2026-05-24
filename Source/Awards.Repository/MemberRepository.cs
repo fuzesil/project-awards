@@ -19,6 +19,14 @@
         }
 
         /// <inheritdoc/>
+        public void ChangeChiefEditor(int id, string newChiefEditor)
+        {
+            Member thisMember = this.GetOne(id);
+            thisMember.ChiefEditor = newChiefEditor;
+            this.Update(thisMember);
+        }
+
+        /// <inheritdoc/>
         public void ChangeName(int id, string newName)
         {
             Member thisMember = this.GetMember(id);
@@ -55,6 +63,38 @@
         public override void Remove(int id)
         {
             this.Remove(this.GetMember(id));
+        }
+
+        /// <inheritdoc/>
+        public void ChangeOfficeLocation(int id, string newOfficeLocation)
+        {
+            Member thisMember = this.GetOne(id);
+            thisMember.OfficeLocation = newOfficeLocation;
+            this.Update(thisMember);
+        }
+
+        /// <inheritdoc/>
+        public void ChangePhoneNumber(int id, string newPhoneNumber)
+        {
+            Member thisMember = this.GetOne(id);
+            thisMember.PhoneNumber = newPhoneNumber;
+            this.Update(thisMember);
+        }
+
+        /// <inheritdoc/>
+        public void ChangePublisher(int id, string newPublisher)
+        {
+            Member thisMember = this.GetOne(id);
+            thisMember.Publisher = newPublisher;
+            this.Update(thisMember);
+        }
+
+        /// <inheritdoc/>
+        public void ChangeWebsite(int id, string newWebsite)
+        {
+            Member thisMember = this.GetOne(id);
+            thisMember.Website = newWebsite;
+            this.Update(thisMember);
         }
 
         /// <summary>
