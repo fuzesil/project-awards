@@ -1,6 +1,5 @@
 ﻿namespace Awards.Logic
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Awards.Data;
@@ -73,19 +72,17 @@
         /// <inheritdoc/>
         public Brand GetOneBrand(int id, string name = "")
         {
-            Brand output = new Brand();
             if (id > 0)
             {
-                output = this.Brands.GetOne(id);
+                return this.Brands.GetOne(id);
             }
 
             if (!string.IsNullOrWhiteSpace(name))
             {
-                output = this.Brands.GetOne(name);
+                return this.Brands.GetOne(name);
             }
 
-            output = output ?? throw new InvalidOperationException("Neither the ID nor the Name was input.");
-            return output;
+            return null;
         }
 
         /// <inheritdoc/>
