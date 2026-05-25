@@ -143,10 +143,10 @@
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<Brand>().HasData(DataSeeder.GetBrands);
-            modelBuilder.Entity<Country>().HasData(DataSeeder.GetCountries);
             modelBuilder.Entity<ExpertGroup>().HasData(DataSeeder.GetExpertGroups);
+            modelBuilder.Entity<Country>().HasData(DataSeeder.GetCountries);
             modelBuilder.Entity<Member>().HasData(DataSeeder.GetMembers);
+            modelBuilder.Entity<Brand>().HasData(DataSeeder.GetBrands);
             modelBuilder.Entity<Product>().HasData(DataSeeder.GetProducts);
         }
     }

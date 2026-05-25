@@ -1,0 +1,87 @@
+﻿<Window x:Class="Awards.WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Awards.WpfApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto">
+
+        <StackPanel>
+
+            <TabControl
+                TabStripPlacement="Top"
+                 Margin="4">
+
+                <TabItem Header="External">
+                    <Grid
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0">
+                            <TextBlock.Text>Hello</TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1">
+                            <TextBlock.Text>Hello</TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Internal">
+                    <Grid
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0">
+                            <TextBlock.Text>Hello</TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1">
+                            <TextBlock.Text>Hello</TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="ADMIN">
+                    Content coming soon :)
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+    </ScrollViewer>
+
+</Window>

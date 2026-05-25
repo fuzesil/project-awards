@@ -9,74 +9,155 @@
     using NUnit.Framework;
 
     /// <summary>
-    /// Tests the funcionalities of <see cref="ExternalLogic"/> and its descendents.
+    /// Tests the functionalities of <see cref="ExternalLogic"/> and its descendants.
     /// </summary>
     [TestFixture]
     public class ExternalTesting
     {
+        private ExternalAuditLogic externalLogic;
+
+        private Mock<IBrandRepository> brandRepo;
+        private Mock<IExpertGroupRepository> egRepo;
+        private Mock<IProductRepository> productRepo;
+
+        private IList<Brand> brandList;
+        private IList<ExpertGroup> egList;
+        private IList<Product> productList;
+
+        /// <summary>
+        /// The method to be called immediately before each <see cref="ExternalTesting"/> test is run.
+        /// </summary>
+        [SetUp]
+        public void Setup()
+        {
+            this.brandRepo = new Mock<IBrandRepository>(MockBehavior.Loose);
+            this.productRepo = new Mock<IProductRepository>(MockBehavior.Loose);
+            this.egRepo = new Mock<IExpertGroupRepository>(MockBehavior.Loose);
+            this.externalLogic = new ExternalAuditLogic(2, this.brandRepo.Object, this.productRepo.Object, this.egRepo.Object);
+            this.brandList = MockRepoGenerator.GenerateBrandList();
+            this.productList = MockRepoGenerator.GenerateProductList();
+            this.egList = MockRepoGenerator.GenerateExpertGroupList();
+        }
+
         /// <summary>
         /// Testing for the ExternalLogic.ListAllEntities method.
         /// </summary>
         [Test]
         public void TestGetAll()
         {
-            Mock<IBrandRepository> mockedBrandRepo = new Mock<IBrandRepository>(MockBehavior.Loose);
-            Mock<IProductRepository> mockedProductRepo = new Mock<IProductRepository>(MockBehavior.Loose);
-            Mock<IExpertGroupRepository> mockedEGrepo = new Mock<IExpertGroupRepository>(MockBehavior.Loose);
-            List<Brand> brands = MockRepoGenerator.GenerateBrandList();
-            List<Product> products = MockRepoGenerator.GenerateProductList();
-            List<ExpertGroup> expertGroups = MockRepoGenerator.GenerateExpertGroupList();
-            mockedBrandRepo.Setup(repo => repo.GetAll()).Returns(brands.AsQueryable());
-            mockedEGrepo.Setup(repo => repo.GetAll()).Returns(expertGroups.AsQueryable());
-            mockedProductRepo.Setup(repo => repo.GetAll()).Returns(products.AsQueryable());
-            ExternalAuditLogic externalAuditLogic = new ExternalAuditLogic(2, mockedBrandRepo.Object, mockedProductRepo.Object, mockedEGrepo.Object);
-            List<ExpertGroup> sampleEGs = expertGroups;
-            Product firstProduct = products[0];
+            this.brandRepo.Setup(repo => repo.GetAll()).Returns(this.brandList.AsQueryable);
+            this.egRepo.Setup(repo => repo.GetAll()).Returns(this.egList.AsQueryable);
+            this.productRepo.Setup(repo => repo.GetAll()).Returns(this.productList.AsQueryable);
+            Product firstProduct = this.productList[0];
+            ExpertGroup lastEG = this.egList[^1];
 
-            IEnumerable<Brand> allBrands = externalAuditLogic.ListAllBrands(out _);
-            IEnumerable<ExpertGroup> allEGs = externalAuditLogic.ListAllExpertgroups(out _);
-            IEnumerable<Product> allProducts = externalAuditLogic.ListAllProducts(out _);
+            _ = this.externalLogic.ListAllBrands(out int countAllBrands);
+            IEnumerable<ExpertGroup> allEGs = this.externalLogic.ListAllExpertgroups(out int countAllEGs);
+            IEnumerable<Product> allProducts = this.externalLogic.ListAllProducts(out _);
 
-            Assert.That(allBrands.Count(), Is.EqualTo(brands.Count));
-            Assert.That(expertGroups, Is.EquivalentTo(sampleEGs));
-            Assert.That(products, Does.Contain(firstProduct));
-            mockedBrandRepo.Verify(repo => repo.GetAll(), Times.Once);
-            mockedEGrepo.Verify(repo => repo.GetAll(), Times.Once);
-            mockedProductRepo.Verify(repo => repo.GetAll(), Times.Once);
-            mockedBrandRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.Never);
-            mockedEGrepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.Never);
-            mockedProductRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.Never);
+            Assert.That(countAllBrands, Is.EqualTo(this.brandList.Count));
+            Assert.That(this.egList, Is.EquivalentTo(allEGs));
+            Assert.That(allProducts.ElementAt(0), Is.EqualTo(firstProduct));
+            Assert.That(allEGs.ElementAt(countAllEGs - 1), Is.EqualTo(lastEG));
+            this.brandRepo.Verify(repo => repo.GetAll(), Times.Once);
+            this.egRepo.Verify(repo => repo.GetAll(), Times.Once);
+            this.productRepo.Verify(repo => repo.GetAll(), Times.Once);
+            this.brandRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.Never);
+            this.egRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.Never);
+            this.productRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.Never);
         }
 
         /// <summary>
-        /// Testing for the ExternalLogic.GetOneEntity method.
+        /// Testing the return value of <see cref="ExternalLogic.GetOneBrand(int, string)"/> method.
         /// </summary>
-        [Test]
-        public void TestGetOne()
+        /// <param name="id">Any positive integer.</param>
+        /// <param name="name">Any of the names in the data set.</param>
+        [TestCase(1, "NAD")]
+        [TestCase(5, "Focal")]
+        [TestCase(int.MaxValue / 2, "qwertzuiop")]
+        [TestCase(int.MinValue, "Invalid")]
+        [TestCase(-1, null)]
+        [TestCase(0, "")]
+        public void TestGetOneBrandReturnsValidOrNull(int id, string name)
         {
-            Mock<IBrandRepository> mockedBrandRepo = new Mock<IBrandRepository>(MockBehavior.Loose);
-            Mock<IProductRepository> mockedProductRepo = new Mock<IProductRepository>(MockBehavior.Loose);
-            Mock<IExpertGroupRepository> mockedEGrepo = new Mock<IExpertGroupRepository>(MockBehavior.Loose);
-            List<Brand> brands = MockRepoGenerator.GenerateBrandList();
-            List<Product> products = MockRepoGenerator.GenerateProductList();
-            List<ExpertGroup> expertGroups = MockRepoGenerator.GenerateExpertGroupList();
-            Brand returnedBrand = new Brand();
-            ExpertGroup returnedExpertGroup = new ExpertGroup();
-            Product returnedProduct = new Product();
-            mockedBrandRepo.Setup(repo => repo.GetOne(It.IsAny<int>())).Returns(returnedBrand);
-            mockedEGrepo.Setup(repo => repo.GetOne(It.IsAny<int>())).Returns(returnedExpertGroup);
-            mockedProductRepo.Setup(repo => repo.GetOne(It.IsAny<int>())).Returns(returnedProduct);
-            ExternalAuditLogic externalAuditLogic = new ExternalAuditLogic(2, mockedBrandRepo.Object, mockedProductRepo.Object, mockedEGrepo.Object);
-            List<ExpertGroup> sampleEGs = expertGroups;
-            Product firstProduct = products[0];
+            this.brandRepo.Setup(repo => repo.GetOne(id))
+                .Returns<int>(idArg => this.brandList.SingleOrDefault(b => b.BrandId == idArg));
+            this.brandRepo.Setup(repo => repo.GetOne(name))
+                .Returns<string>(nameArg => this.brandList.FirstOrDefault(b => b.Name == nameArg));
 
-            Brand resultBrand = externalAuditLogic.GetOneBrand(1);
-            Product resultProduct = externalAuditLogic.GetOneProduct(2);
+            Brand resultBrandById = this.externalLogic.GetOneBrand(id);
+            Brand resultBrandByName = this.externalLogic.GetOneBrand(It.Is<int>(i => i < 1), name);
 
-            mockedBrandRepo.Verify(repo => repo.GetOne(1), Times.Once);
-            mockedBrandRepo.Verify(repo => repo.GetAll(), Times.Never);
-            mockedProductRepo.Verify(repo => repo.GetOne(1), Times.Never);
-            mockedProductRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.Once);
+            Assert.AreEqual(resultBrandById, this.brandList.SingleOrDefault(b => b.BrandId == id));
+            Assert.AreEqual(resultBrandByName, this.brandList.FirstOrDefault(b => b.Name == name));
+            Assert.AreEqual(resultBrandById, resultBrandByName);
+            this.brandRepo.Verify(repo => repo.GetOne(id), Times.AtMostOnce);
+            this.brandRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.AtMostOnce);
+            this.brandRepo.Verify(repo => repo.GetOne(name), Times.AtMostOnce);
+            this.brandRepo.Verify(repo => repo.GetOne(It.IsAny<string>()), Times.AtMostOnce);
+            this.brandRepo.Verify(repo => repo.GetAll(), Times.Never);
+        }
+
+        /// <summary>
+        /// Testing the return value of <see cref="ExternalLogic.GetOneExpertGroup(int, string)"/> method.
+        /// </summary>
+        /// <param name="id">Any positive integer.</param>
+        /// <param name="name">Any of the names in the data set.</param>
+        [TestCase(1, "Hi-Fi")]
+        [TestCase(3, "Home Theatre Display & Video")]
+        [TestCase(int.MaxValue / 2, "qwertzuiop")]
+        [TestCase(int.MinValue, "Invalid")]
+        [TestCase(-1, null)]
+        [TestCase(0, "")]
+        public void TestGetOneExpertGroupReturnsValidOrNull(int id, string name)
+        {
+            this.egRepo.Setup(repo => repo.GetOne(id))
+                .Returns<int>(idArg => this.egList.SingleOrDefault(eg => eg.ExpertGroupID == idArg));
+            this.egRepo.Setup(repo => repo.GetOne(name))
+                .Returns<string>(nameArg => this.egList.FirstOrDefault(eg => eg.Name == nameArg));
+
+            ExpertGroup resultEGById = this.externalLogic.GetOneExpertGroup(id);
+            ExpertGroup resultEGByName = this.externalLogic.GetOneExpertGroup(It.Is<int>(i => i < 1), name);
+
+            Assert.AreEqual(resultEGById, this.egList.SingleOrDefault(eg => eg.ExpertGroupID == id));
+            Assert.AreEqual(resultEGByName, this.egList.FirstOrDefault(eg => eg.Name == name));
+            Assert.AreEqual(resultEGById, resultEGByName);
+            this.egRepo.Verify(repo => repo.GetOne(id), Times.AtMostOnce);
+            this.egRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.AtMostOnce);
+            this.egRepo.Verify(repo => repo.GetOne(name), Times.AtMostOnce);
+            this.egRepo.Verify(repo => repo.GetOne(It.IsAny<string>()), Times.AtMostOnce);
+            this.egRepo.Verify(repo => repo.GetAll(), Times.Never);
+        }
+
+        /// <summary>
+        /// Testing the return value of <see cref="ExternalLogic.GetOneProduct(int, string)"/> method.
+        /// </summary>
+        /// <param name="id">Any positive integer.</param>
+        /// <param name="name">Any of the names in the data set.</param>
+        [TestCase(2, "EOS-1D X Mark III")]
+        [TestCase(6, "X100V")]
+        [TestCase(int.MaxValue / 2, "qwertzuiop")]
+        [TestCase(int.MinValue, "Invalid")]
+        [TestCase(-1, null)]
+        [TestCase(0, "")]
+        public void TestGetOneProductReturnsValidOrNull(int id, string name)
+        {
+            this.productRepo.Setup(repo => repo.GetOne(id))
+                .Returns<int>(idArg => this.productList.SingleOrDefault(p => p.ProductID == idArg));
+            this.productRepo.Setup(repo => repo.GetOne(name))
+                .Returns<string>(nameArg => this.productList.FirstOrDefault(p => p.Name == nameArg));
+
+            Product resultProductById = this.externalLogic.GetOneProduct(id);
+            Product resultProductByName = this.externalLogic.GetOneProduct(It.Is<int>(i => i < 1), name);
+
+            Assert.AreEqual(resultProductById, this.productList.SingleOrDefault(p => p.ProductID == id));
+            Assert.AreEqual(resultProductByName, this.productList.FirstOrDefault(p => p.Name == name));
+            Assert.AreEqual(resultProductById, resultProductByName);
+            this.productRepo.Verify(repo => repo.GetOne(id), Times.AtMostOnce);
+            this.productRepo.Verify(repo => repo.GetOne(It.IsAny<int>()), Times.AtMostOnce);
+            this.productRepo.Verify(repo => repo.GetOne(name), Times.AtMostOnce);
+            this.productRepo.Verify(repo => repo.GetOne(It.IsAny<string>()), Times.AtMostOnce);
+            this.productRepo.Verify(repo => repo.GetAll(), Times.Never);
         }
 
         /// <summary>
@@ -85,36 +166,21 @@
         [Test]
         public void TestListTopBrands()
         {
-            Mock<IBrandRepository> mockedBrandRepo = new Mock<IBrandRepository>(MockBehavior.Loose);
-            Mock<IProductRepository> mockedProductRepo = new Mock<IProductRepository>(MockBehavior.Loose);
-            Mock<IExpertGroupRepository> mockedEGrepo = new Mock<IExpertGroupRepository>(MockBehavior.Loose);
-            List<Brand> brands = MockRepoGenerator.GenerateBrandList();
-            List<Product> products = MockRepoGenerator.GenerateProductList();
-            List<ExpertGroup> expertGroups = MockRepoGenerator.GenerateExpertGroupList();
-            mockedBrandRepo.Setup(repo => repo.GetAll()).Returns(brands.AsQueryable());
-            mockedEGrepo.Setup(repo => repo.GetAll()).Returns(expertGroups.AsQueryable());
-            mockedProductRepo.Setup(repo => repo.GetAll()).Returns(products.AsQueryable());
-            ExternalAuditLogic externalAuditLogic = new ExternalAuditLogic(2, mockedBrandRepo.Object, mockedProductRepo.Object, mockedEGrepo.Object);
+            this.brandRepo.Setup(repo => repo.GetAll()).Returns(this.brandList.AsQueryable);
+            this.egRepo.Setup(repo => repo.GetAll()).Returns(this.egList.AsQueryable);
+            this.productRepo.Setup(repo => repo.GetAll()).Returns(this.productList.AsQueryable);
 
-            var results = externalAuditLogic.ListTopBrands();
-            var expectedResults = new List<BrandAndNumber>
+            IEnumerable<BrandAndNumber> results = this.externalLogic.ListTopBrands();
+            BrandAndNumber[] expectedResults = new BrandAndNumber[]
             {
-                new BrandAndNumber
-                {
-                    Brand = new Brand { BrandId = 12, Name = "LG", CountryID = 9, Address = "Seoul", Homepage = "lg.com" },
-                    Number = 3,
-                },
-                new BrandAndNumber
-                {
-                    Brand = new Brand { BrandId = 4, Name = "DxO Labs", CountryID = 5, Address = "Paris", Homepage = "dxo.fr" },
-                    Number = 2,
-                },
+                new() { Brand = this.brandList[11], Number = 3 },
+                new() { Brand = this.brandList[3], Number = 2 },
             };
 
             Assert.That(results, Is.EquivalentTo(expectedResults));
-            mockedProductRepo.Verify(repo => repo.GetAll(), Times.Exactly(2));
-            mockedBrandRepo.Verify(repo => repo.GetAll(), Times.Once);
-            mockedEGrepo.Verify(repo => repo.GetAll(), Times.Never);
+            this.productRepo.Verify(repo => repo.GetAll(), Times.Exactly(2));
+            this.brandRepo.Verify(repo => repo.GetAll(), Times.Once);
+            this.egRepo.Verify(repo => repo.GetAll(), Times.Never);
         }
 
         /// <summary>
@@ -123,46 +189,23 @@
         [Test]
         public void TestGetMaxPriceProdInEveryEG()
         {
-            Mock<IBrandRepository> mockedBrandRepo = new Mock<IBrandRepository>(MockBehavior.Loose);
-            Mock<IProductRepository> mockedProductRepo = new Mock<IProductRepository>(MockBehavior.Loose);
-            Mock<IExpertGroupRepository> mockedEGrepo = new Mock<IExpertGroupRepository>(MockBehavior.Loose);
-            List<Brand> brands = MockRepoGenerator.GenerateBrandList();
-            List<Product> products = MockRepoGenerator.GenerateProductList();
-            List<ExpertGroup> expertGroups = MockRepoGenerator.GenerateExpertGroupList();
-            mockedBrandRepo.Setup(repo => repo.GetAll()).Returns(brands.AsQueryable());
-            mockedEGrepo.Setup(repo => repo.GetAll()).Returns(expertGroups.AsQueryable());
-            mockedProductRepo.Setup(repo => repo.GetAll()).Returns(products.AsQueryable());
-            ExternalAuditLogic externalAuditLogic = new ExternalAuditLogic(1, mockedBrandRepo.Object, mockedProductRepo.Object, mockedEGrepo.Object);
+            this.brandRepo.Setup(repo => repo.GetAll()).Returns(this.brandList.AsQueryable);
+            this.egRepo.Setup(repo => repo.GetAll()).Returns(this.egList.AsQueryable);
+            this.productRepo.Setup(repo => repo.GetAll()).Returns(this.productList.AsQueryable);
 
-            var result = externalAuditLogic.GetMaxPriceProdInEveryEG();
-            var expectedResult = new List<ExpertgroupProduct>
+            IEnumerable<ExpertgroupProduct> result = this.externalLogic.GetMaxPriceProdInEveryEG();
+            ExpertgroupProduct[] expectedResult = new ExpertgroupProduct[]
             {
-                new ExpertgroupProduct
-                {
-                    ExpertGroup = new ExpertGroup { ExpertGroupID = 1, Name = "Hi-Fi" },
-                    Product = new Product { ProductID = 3, BrandId = 3, Name = "Epikon", Category = "BEST DALI FLOORSTANDER", ExpertGroupID = 1, Price = 1999 },
-                },
-                new ExpertgroupProduct
-                {
-                    ExpertGroup = new ExpertGroup { ExpertGroupID = 2, Name = "Home Theatre Audio" },
-                    Product = new Product { ProductID = 1, BrandId = 2, Name = "Beosound Stage", Category = "BEST PREMIUM SOUNDBAR", ExpertGroupID = 2, Price = 2000 },
-                },
-                new ExpertgroupProduct
-                {
-                    ExpertGroup = new ExpertGroup { ExpertGroupID = 3, Name = "Home Theatre Display & Video" },
-                    Product = new Product { ProductID = 8, BrandId = 12, Name = "OLED65GX", Category = "BEST PREMIUM OLED TV", ExpertGroupID = 3, Price = 29999 },
-                },
-                new ExpertgroupProduct
-                {
-                    ExpertGroup = new ExpertGroup { ExpertGroupID = 6, Name = "Photography" },
-                    Product = new Product { ProductID = 2, BrandId = 9, Name = "EOS-1D X Mark III", Category = "BEST PROFESSIONAL CAMERA", ExpertGroupID = 6, Price = 9183 },
-                },
+                new() { ExpertGroup = this.egList[0], Product = this.productList[2] },
+                new() { ExpertGroup = this.egList[1], Product = this.productList[0] },
+                new() { ExpertGroup = this.egList[2], Product = this.productList[7] },
+                new() { ExpertGroup = this.egList[3], Product = this.productList[1] },
             };
 
             Assert.That(result, Is.EquivalentTo(expectedResult));
-            mockedProductRepo.Verify(repo => repo.GetAll(), Times.Exactly(2));
-            mockedEGrepo.Verify(repo => repo.GetAll(), Times.Once);
-            mockedBrandRepo.Verify(repo => repo.GetAll(), Times.Never);
+            this.productRepo.Verify(repo => repo.GetAll(), Times.Exactly(2));
+            this.egRepo.Verify(repo => repo.GetAll(), Times.Once);
+            this.brandRepo.Verify(repo => repo.GetAll(), Times.Never);
         }
     }
 }

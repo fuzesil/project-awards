@@ -10,172 +10,159 @@
     /// </summary>
     public static class DataSeeder
     {
-        private static readonly Random Rnd = new Random();
+        private static readonly Random Rnd = new();
+        private static readonly DateTime StartDt = new(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime EndDt = new(2020, 12, 31, 23, 59, 59, DateTimeKind.Utc);
+        private static Dictionary<string, ExpertGroup> nameToExpertGroup;
+        private static Dictionary<string, Country> nameToCountry;
+        private static Dictionary<string, Brand> nameToBrand;
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Country"/> objects by calling the <see cref="CountryLoader(string)"/> method.
         /// </summary>
-        public static IEnumerable<Country> GetCountries { get => CountryLoader(); }
+        public static IEnumerable<Country> GetCountries
+        {
+            get
+            {
+                nameToCountry ??= CountryLoader().ToDictionary(static c => c.Name, static c => c, StringComparer.OrdinalIgnoreCase);
+                return nameToCountry.Values;
+            }
+        }
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="ExpertGroup"/> objects by calling the <see cref="ExpertGroupLoader(string)"/> method.
         /// </summary>
-        public static IEnumerable<ExpertGroup> GetExpertGroups { get => ExpertGroupLoader(); }
+        public static IEnumerable<ExpertGroup> GetExpertGroups
+        {
+            get
+            {
+                nameToExpertGroup ??= ExpertGroupLoader().ToDictionary(static eg => eg.Name, static eg => eg, StringComparer.OrdinalIgnoreCase);
+                return nameToExpertGroup.Values;
+            }
+        }
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Member"/> objects by calling the <see cref="MemberLoader(string)"/> method.
         /// </summary>
-        public static IEnumerable<Member> GetMembers { get => MemberLoader(); }
+        public static IEnumerable<Member> GetMembers => MemberLoader();
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Brand"/> objects by calling the <see cref="BrandLoader(string)"/> method.
         /// </summary>
-        public static IEnumerable<Brand> GetBrands { get => BrandLoader(); }
+        public static IEnumerable<Brand> GetBrands
+        {
+            get
+            {
+                nameToBrand ??= BrandLoader().ToDictionary(static b => b.Name, static b => b, StringComparer.OrdinalIgnoreCase);
+                return nameToBrand.Values;
+            }
+        }
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> collection of <see cref="Brand"/> objects by calling the <see cref="BrandLoader(string)"/> method.
         /// </summary>
-        public static IEnumerable<Product> GetProducts { get => ProductLoader(); }
+        public static IEnumerable<Product> GetProducts => ProductLoader();
 
         private static IEnumerable<Country> CountryLoader(string path = @"DataSeed\Country.csv")
         {
-            List<Country> output = new List<Country>();
             int counter = 0;
-            string line = string.Empty;
-            string[] fields;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while ((line = sr.ReadLine()) != null)
+                string[] fields = line.Split(';');
+                yield return new Country
                 {
-                    fields = line.Split(';');
-                    output.Add(new Country
-                    {
-                        CountryID = ++counter,
-                        Name = fields[0],
-                        CapitalCity = fields[1],
-                        CallingCode = ((Func<int>)(() => string.IsNullOrWhiteSpace(fields[2]) ? 0 : Convert.ToInt32(fields[2], System.Globalization.NumberFormatInfo.InvariantInfo)))(),
-                        PPPperCapita = ((Func<int>)(() => string.IsNullOrWhiteSpace(fields[3]) ? 0 : Convert.ToInt32(fields[3], System.Globalization.NumberFormatInfo.InvariantInfo)))(),
-                    });
-                }
-
-                sr.Close();
+                    CountryID = ++counter,
+                    Name = fields[0],
+                    CapitalCity = fields[1],
+                    CallingCode = fields[2].ToIntOrZero(),
+                    PPPperCapita = fields[3].ToIntOrZero(),
+                };
             }
-
-            return output;
         }
 
         private static IEnumerable<ExpertGroup> ExpertGroupLoader(string path = @"DataSeed\ExpertGroup.csv")
         {
-            List<ExpertGroup> output = new List<ExpertGroup>();
-            int counter = 0;
-            string line;
-            string[] fields;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while ((line = sr.ReadLine()) != null)
+                string[] fields = line.Split(';');
+                yield return new ExpertGroup
                 {
-                    fields = line.Split(';');
-                    output.Add(new ExpertGroup
-                    {
-                        ExpertGroupID = ++counter,
-                        Name = fields[0],
-                    });
-                }
-
-                sr.Close();
+                    ExpertGroupID = fields[0].ToIntOrZero(),
+                    Name = fields[1],
+                };
             }
-
-            return output;
         }
 
         private static IEnumerable<Member> MemberLoader(string path = @"DataSeed\Member.csv")
         {
-            List<Member> output = new List<Member>();
             int counter = 0;
-            string line = string.Empty;
-            string[] fields;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while ((line = sr.ReadLine()) != null)
+                string[] fields = line.Split(';');
+                yield return new Member
                 {
-                    fields = line.Split(';');
-                    output.Add(new Member
-                    {
-                        MemberID = ++counter,
-                        ExpertGroupID = GetExpertGroups.First(eg => eg.Name.Equals(fields[0], StringComparison.OrdinalIgnoreCase)).ExpertGroupID,
-                        Name = fields[1],
-                        OfficeLocation = fields[3],
-                        CountryID = GetCountries.First(country => country.Name.Equals(fields[2], StringComparison.OrdinalIgnoreCase)).CountryID,
-                        ChiefEditor = fields[4],
-                        Publisher = fields[5],
-                        PhoneNumber = fields[6],
-                        Website = fields[7],
-                    });
-                }
-
-                sr.Close();
+                    MemberID = ++counter,
+                    ExpertGroupID = nameToExpertGroup.TryGetValue(fields[0], out ExpertGroup eg) ? eg.ExpertGroupID : 0,
+                    Name = fields[1],
+                    OfficeLocation = fields[3],
+                    CountryID = nameToCountry.TryGetValue(fields[2], out Country c) ? c.CountryID : 0,
+                    ChiefEditor = fields[4],
+                    Publisher = fields[5],
+                    PhoneNumber = fields[6],
+                    Website = fields[7],
+                };
             }
-
-            return output;
         }
 
         private static IEnumerable<Brand> BrandLoader(string path = @"DataSeed\Brand.csv")
         {
-            List<Brand> output = new List<Brand>();
-            int counter = 0;
-            string line = string.Empty;
-            string[] fields;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while ((line = sr.ReadLine()) != null)
+                string[] fields = line.Split(';');
+                yield return new Brand
                 {
-                    fields = line.Split(';');
-                    output.Add(new Brand
-                    {
-                        BrandId = ++counter,
-                        Name = fields[0],
-                        Address = fields[1],
-                        CountryID = GetCountries.FirstOrDefault(cntry => cntry.Name.Equals(fields[2], StringComparison.OrdinalIgnoreCase)).CountryID,
-                        Homepage = fields[3],
-                    });
-                }
-
-                sr.Close();
+                    BrandId = fields[0].ToIntOrZero(),
+                    Name = fields[1],
+                    Address = fields[2],
+                    CountryID = nameToCountry.TryGetValue(fields[3], out Country c) ? c.CountryID : 0,
+                    Homepage = fields[4],
+                };
             }
-
-            return output;
         }
 
         private static IEnumerable<Product> ProductLoader(string path = @"DataSeed\Product.csv")
         {
-            List<Product> output = new List<Product>();
             int counter = 0;
-            Brand newbrand = null;
-            string line = string.Empty;
-            string[] fields;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            while (sr.ReadLine() is string line)
             {
-                while ((line = sr.ReadLine()) != null)
+                string[] fields = line.Split(';');
+                yield return new Product
                 {
-                    fields = line.Split(';');
-                    newbrand = GetBrands.FirstOrDefault(manu => manu.Name.Equals(fields[1], StringComparison.OrdinalIgnoreCase));
-                    output.Add(new Product
-                    {
-                        ProductID = ++counter,
-                        BrandId = newbrand.BrandId,
-                        Name = fields[2],
-                        ExpertGroupID = int.Parse(fields[3], System.Globalization.NumberFormatInfo.InvariantInfo),
-                        Category = fields[4],
-                        Price = Rnd.Next(9999),
-                        LaunchDate = DateTime.Today,
-                        EstimatedLifetime = Rnd.Next(1, 9),
-                    });
-                }
-
-                sr.Close();
+                    ProductID = ++counter,
+                    BrandId = nameToBrand.TryGetValue(fields[1], out Brand b) ? b.BrandId : 0,
+                    Name = fields[2],
+                    ExpertGroupID = fields[3].ToIntOrZero(),
+                    Category = fields[4],
+                    Price = Rnd.Next(9999),
+                    LaunchDate = StartDt.AddDays(Rnd.Next((EndDt - StartDt).Days)),
+                    EstimatedLifetime = Rnd.Next(1, 9),
+                };
             }
-
-            return output;
         }
+
+        /// <summary>
+        /// Returns the integer value of the string if it can be parsed, otherwise returns 0. This method uses invariant culture for parsing and allows for leading and trailing whitespace.
+        /// </summary>
+        /// <param name="str">The string to parse.</param>
+        /// <returns>The integer value of the string if it can be parsed; otherwise, 0.</returns>
+        private static int ToIntOrZero(this string str) =>
+            int.TryParse(str, System.Globalization.NumberStyles.Integer, System.Globalization.NumberFormatInfo.InvariantInfo, out int result)
+                ? result
+                : 0;
     }
 }

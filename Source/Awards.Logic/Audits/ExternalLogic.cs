@@ -1,8 +1,8 @@
 ﻿namespace Awards.Logic
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Awards.Data;
     using Awards.Repository;
 
     /// <summary>
@@ -46,49 +46,47 @@
         public IExpertGroupRepository Expertgroups { get; private set; }
 
         /// <inheritdoc/>
-        public IEnumerable<Data.Brand> ListAllBrands(out int count)
+        public IEnumerable<Brand> ListAllBrands(out int count)
         {
-            IQueryable<Data.Brand> output = this.Brands.GetAll();
+            IQueryable<Brand> output = this.Brands.GetAll();
             count = output.Count();
             return output.ToList();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Data.ExpertGroup> ListAllExpertgroups(out int count)
+        public IEnumerable<ExpertGroup> ListAllExpertgroups(out int count)
         {
-            IQueryable<Data.ExpertGroup> output = this.Expertgroups.GetAll();
+            IQueryable<ExpertGroup> output = this.Expertgroups.GetAll();
             count = output.Count();
             return output.ToList();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Data.Product> ListAllProducts(out int count)
+        public IEnumerable<Product> ListAllProducts(out int count)
         {
-            IQueryable<Data.Product> output = this.Products.GetAll();
+            IQueryable<Product> output = this.Products.GetAll();
             count = output.Count();
             return output.ToList();
         }
 
         /// <inheritdoc/>
-        public Data.Brand GetOneBrand(int id, string name = "")
+        public Brand GetOneBrand(int id, string name = "")
         {
-            Data.Brand output = new Data.Brand();
             if (id > 0)
             {
-                output = this.Brands.GetOne(id);
+                return this.Brands.GetOne(id);
             }
 
             if (!string.IsNullOrWhiteSpace(name))
             {
-                output = this.Brands.GetOne(name);
+                return this.Brands.GetOne(name);
             }
 
-            output = output ?? throw new InvalidOperationException("Neither the ID nor the Name was input.");
-            return output;
+            return null;
         }
 
         /// <inheritdoc/>
-        public Data.ExpertGroup GetOneExpertGroup(int id, string name = "")
+        public ExpertGroup GetOneExpertGroup(int id, string name = "")
         {
             if (id > 0)
             {
@@ -104,7 +102,7 @@
         }
 
         /// <inheritdoc/>
-        public Data.Product GetOneProduct(int id, string name = "")
+        public Product GetOneProduct(int id, string name = "")
         {
             if (id > 0)
             {
