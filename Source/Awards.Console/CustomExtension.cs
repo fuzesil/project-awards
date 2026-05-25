@@ -1,5 +1,7 @@
 ﻿namespace Awards
 {
+    using System;
+
     /// <summary>
     /// A helper class for displaying data line by line on the console.
     /// </summary>
@@ -15,22 +17,22 @@
         {
             if (input == null)
             {
-                throw new System.ArgumentNullException(nameof(input), " was null.");
+                throw new ArgumentNullException(nameof(input), " was null.");
             }
 
-            System.Console.ForegroundColor = System.ConsoleColor.DarkYellow;
-            System.Console.WriteLine("\n  BEGIN: " + title);
-            System.Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("\n  BEGIN: " + title);
+            Console.ResetColor();
 
             foreach (var item in input)
             {
-                System.Console.WriteLine(item.ToString());
+                Console.WriteLine(item.ToString());
             }
 
-            System.Console.ForegroundColor = System.ConsoleColor.DarkCyan;
-            System.Console.WriteLine((string.IsNullOrWhiteSpace(title) ? "  " : $" {title} ") + "END.\t(Press a key)");
-            System.Console.ResetColor();
-            System.Console.ReadKey();
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine((string.IsNullOrWhiteSpace(title) ? "  " : $" {title} ") + "END.\t(Press a key)");
+            Console.ResetColor();
+            Console.ReadKey();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace Awards
 {
+    using System;
     using Awards.Data;
 
     /// <summary>
@@ -9,8 +10,8 @@
     {
         private static void Main(string[] args)
         {
-            System.Console.Title = "EISA Awards Auditing Application - by QKNWZ1";
-            System.Console.WriteLine("** Welcome! **\nPlease wait, the initialisation process has begun.");
+            Console.Title = "EISA Awards Auditing Application - by QKNWZ1";
+            Console.WriteLine("** Welcome! **\nPlease wait, the initialisation process has begun.");
             AwardsDbContext eisa = new Data.AwardsDbContext();
             AuditWorker auditor = AuditWorker.Initialize(eisa);
             AdminRunner admin = AdminRunner.Initialize(eisa);
@@ -114,16 +115,16 @@
 
         private static bool AreYouSure()
         {
-            System.Console.WriteLine("Proceed to Exit?\t[1] [Y]es [I]gen [O]ui [S]i [J]a\t(case insensitive)");
+            Console.WriteLine("Proceed to Exit?\t[1] [Y]es [I]gen [O]ui [S]i [J]a\t(case insensitive)");
             System.Collections.Generic.List<char> replies = new System.Collections.Generic.List<char> { '1', 'Y', 'I', 'O', 'S', 'J' };
-            char answer = System.Console.ReadKey().KeyChar;
+            char answer = Console.ReadKey().KeyChar;
             answer = char.ToUpperInvariant(answer);
             if (replies.Contains(answer))
             {
-                System.Console.ForegroundColor = System.ConsoleColor.Green;
-                System.Console.WriteLine("\n ** Thank you for using this application! **");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n ** Thank you for using this application! **");
                 System.Threading.Thread.Sleep(1000);
-                System.Console.ResetColor();
+                Console.ResetColor();
                 return true;
             }
 
@@ -132,18 +133,18 @@
 
         private static bool Auth()
         {
-            System.Console.WriteLine("Please authenticate to access the Administrators' Menu.");
-            System.Console.WriteLine(" (Input \"ADMIN\" without quotes) ");
-            string key = System.Console.ReadLine();
+            Console.WriteLine("Please authenticate to access the Administrators' Menu.");
+            Console.WriteLine(" (Input \"ADMIN\" without quotes) ");
+            string key = Console.ReadLine();
             if (key == "ADMIN")
             {
                 return true;
             }
 
-            System.Console.ForegroundColor = System.ConsoleColor.Red;
-            System.Console.WriteLine("Authentication FAILED!");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Authentication FAILED!");
             System.Threading.Thread.Sleep(1000);
-            System.Console.ResetColor();
+            Console.ResetColor();
             return false;
         }
     }
