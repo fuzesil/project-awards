@@ -84,7 +84,7 @@
                 new Member { MemberID = 1, Name = "Australian Hi-Fi", CountryID = 1, ExpertGroupID = 1, OfficeLocation = "Suite 3, Level 10, 100 Walker Street, North Sydney, NSW 2060," },
                 new Member { MemberID = 2, Name = "FWD Magazine", CountryID = 2, ExpertGroupID = 1, OfficeLocation = "Van den Hautelei 101,   2100 Deurne" },
                 new Member { MemberID = 3, Name = "SOUNDSTAGE! HI-FI", CountryID = 3, ExpertGroupID = 1, OfficeLocation = "1953 Meldrum Avenue Ottawa, ON K1J 7V6" },
-                new Member { MemberID = 4, Name = "SOUNDSTAGE! HI-FI", CountryID = 4, ExpertGroupID = 1 },
+                new Member { MemberID = 4, Name = "SOUNDSTAGE! HTA", CountryID = 3, ExpertGroupID = 2, OfficeLocation = "1953 Meldrum Avenue Ottawa, ON K1J 7V6" },
                 new Member { MemberID = 5, Name = "Les Années Laser", CountryID = 5, ExpertGroupID = 2, OfficeLocation = "20, passage Turquetil, - 75011 Paris" },
                 new Member { MemberID = 6, Name = "Heimkino", CountryID = 6, ExpertGroupID = 2, OfficeLocation = "Gartroper Strasse 42, D-47138 - Duisburg" },
                 new Member { MemberID = 7, Name = "Hifi Test TV Video", CountryID = 6, ExpertGroupID = 3, OfficeLocation = "Gartroper Strasse 42, D-47138 - Duisburg", },
