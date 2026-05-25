@@ -8,10 +8,10 @@
     public interface IMemberRepository : IRepository<Member>
     {
         /// <summary>
-        /// Updates the name of the only Member record with the given ID.
+        /// Updates the <see cref="Member.Name"/> field (i.e. a new name can be specified).
         /// </summary>
-        /// <param name="id">The ID of the Member record to be updated.</param>
-        /// <param name="newName">The new name for the chosen Member record.</param>
+        /// <param name="id">The ID [<see cref="Member.MemberID"/>] of the <see cref="Member"/> record to be updated.</param>
+        /// <param name="newName">The new value of <see cref="Member.Name"/> (i.e. new name for the chosen record).</param>
         void ChangeName(int id, string newName);
 
         /// <summary>
