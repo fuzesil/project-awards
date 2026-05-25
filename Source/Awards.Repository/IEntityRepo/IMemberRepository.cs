@@ -44,18 +44,12 @@
 
         /// <summary>
         /// Updates the <see cref="Member.OfficeLocation"/> field (i.e. a new office location (address) can be specified).
+        /// The country of the office location can also be updated by specifying the new country ID.
         /// </summary>
         /// <param name="id">The ID [<see cref="Member.MemberID"/>] of the <see cref="Member"/> record to be updated.</param>
         /// <param name="newOfficeLocation">The new value of <see cref="Member.OfficeLocation"/> (i.e. new office location for the chosen record).</param>
-        void ChangeOfficeLocation(int id, string newOfficeLocation);
-
-        /// <summary>
-        /// Updates the country and the office location data of the only Member record with the given ID.
-        /// </summary>
-        /// <param name="id">The ID of the Member record to be updated.</param>
-        /// <param name="newCountryID">The ID of the new country for the chosen Member record.
-        /// If this is less than 1, it will be ignored.</param>
-        /// <param name="newLocation">The new office location for the chosen Member record.</param>
-        void Move(int id, int newCountryID, string newLocation);
+        /// <param name="newCountryId">The ID of the country [<see cref="Country.CountryID"/>] for the chosen record.
+        /// If &lt;1, it will be ignored.</param>
+        void ChangeOfficeLocation(int id, string newOfficeLocation, int newCountryId = 0);
     }
 }

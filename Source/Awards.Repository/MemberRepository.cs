@@ -35,19 +35,6 @@
         }
 
         /// <inheritdoc/>
-        public void Move(int id, int newCountryID, string newLocation)
-        {
-            Member thisMember = this.GetOne(id);
-            if (id > 0)
-            {
-                thisMember.CountryID = newCountryID;
-            }
-
-            thisMember.OfficeLocation = newLocation;
-            this.Update(thisMember);
-        }
-
-        /// <inheritdoc/>
         public override Member GetOne(int id)
         {
             return this.GetAll().First(member => member.MemberID == id);
@@ -66,10 +53,15 @@
         }
 
         /// <inheritdoc/>
-        public void ChangeOfficeLocation(int id, string newOfficeLocation)
+        public void ChangeOfficeLocation(int id, string newOfficeLocation, int newCountryId = 0)
         {
             Member thisMember = this.GetOne(id);
             thisMember.OfficeLocation = newOfficeLocation;
+            if (newCountryId > 0)
+            {
+                thisMember.CountryID = newCountryId;
+            }
+
             this.Update(thisMember);
         }
 
