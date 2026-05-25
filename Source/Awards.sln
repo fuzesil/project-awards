@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.37012.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Awards.Program", "Awards.Console\Awards.Program.csproj", "{D86D73E4-8EEC-41D5-B6DE-D45DECFF7E69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Awards.ConsoleApp", "Awards.ConsoleApp\Awards.ConsoleApp.csproj", "{D86D73E4-8EEC-41D5-B6DE-D45DECFF7E69}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Awards.Data", "Awards.Data\Awards.Data.csproj", "{AA8C4A1E-8302-4CC9-929E-4AC8B042E67F}"
 EndProject
