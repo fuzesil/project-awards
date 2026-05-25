@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Awards.Repository", "Awards
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Awards.Test", "Awards.Test\Awards.Test.csproj", "{E65F3464-40AA-4358-9AE7-A3041C6E4491}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Awards.WebApp", "Awards.WebApp\Awards.WebApp.csproj", "{BFB07F43-F088-4413-978E-540E849CD61E}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoxyGen", "DoxyGen\DoxyGen.csproj", "{C12886BC-7844-41D8-8190-D4F0C0B4E956}"
 EndProject
 Global
@@ -51,6 +53,11 @@ Global
 		{C12886BC-7844-41D8-8190-D4F0C0B4E956}.Doc|Any CPU.ActiveCfg = Doc|Any CPU
 		{C12886BC-7844-41D8-8190-D4F0C0B4E956}.Doc|Any CPU.Build.0 = Doc|Any CPU
 		{C12886BC-7844-41D8-8190-D4F0C0B4E956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFB07F43-F088-4413-978E-540E849CD61E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFB07F43-F088-4413-978E-540E849CD61E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFB07F43-F088-4413-978E-540E849CD61E}.Doc|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFB07F43-F088-4413-978E-540E849CD61E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFB07F43-F088-4413-978E-540E849CD61E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
